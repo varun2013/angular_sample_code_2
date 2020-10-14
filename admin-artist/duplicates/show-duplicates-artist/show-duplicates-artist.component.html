@@ -1,0 +1,100 @@
+<div class="show-duplicates">
+  <div *ngIf="loading" class="loader">
+    <div class="small-loader"></div>
+  </div>
+  <label class="main-text">Duplicate Records</label>
+  <app-alert [alertType]="alertType" *ngIf="show_duplicates.resMsg" [message]="show_duplicates.resMsg"></app-alert>
+  <app-alert [alertType]="'success'" *ngIf="isReviewed" [message]="'User Edited Artist marked as reviewed.'"></app-alert>
+  <div class="row show-table-input">
+    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+      <button [disabled]="checkedArtistId.length < 1" label="Edit Selected Artist" pbutton="" type="button" ng-reflect-label="Edit Selected Artist" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+          <a class="ui-button-text ui-c" [routerLink]="['/user/event/create-artist/', checkedArtistId[0]]">Edit Selected Artist</a>
+      </button>
+  </div>
+    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><p-dropdown [options]="dup_actions" class="show-duplicate-dropdown" [(ngModel)]="show_duplicates.dropdownValue"></p-dropdown></div>
+    <div class="col-lg-1 col-md-1 col-sm-1 custom-padding go-button">
+      <button pButton type="button" (click)="statusChange(show_duplicates.dropdownValue)" label="Go"></button>
+    </div>
+  </div>
+  <p-dialog header="Message" [(visible)]="display" >
+    Please select atleast one artist
+  </p-dialog>
+
+  <div class="row show-table">
+    <p-dataTable [value]="show_duplicates" (click)="lateSelectedValue()" [(selection)]="selectedValue" dataKey="checked" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)">
+      <p-column field="id" header="ID">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text">{{show_duplicates[index]._id}}</label>
+          <label class="created-text">
+            (Images : {{show_duplicates[index].image_count}})
+          </label>
+        </ng-template>
+      </p-column>
+      <p-column field="name" header="Name">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text name-highlight">{{show_duplicates[index].name}}</label>
+          <span class="edit-btn divider">
+          <a target="_blank" [routerLink]="['/artist/',show_duplicates[index].url]">View</a>
+          </span>
+          <span class="edit-btn divider">
+            <a target="_blank" [routerLink]="['/user/event/create-artist',show_duplicates[index]._id]">Edit</a>
+          </span>
+          <span class="edit-btn divider">
+            <a target="_blank" routerLinkActive="active-link" [routerLink]="['/admin/mergeartist/',show_duplicates[index]._id]">Merge</a>
+          </span>
+          <span *ngIf="show_duplicates[index].status != '0'" class="edit-btn">
+            <a (click)="delete_record(show_duplicates[index]._id)">Delete</a>
+          </span>
+          <span>
+            <p-confirmDialog *ngIf="isDialogClose" header="Confirmation" icon="fa fa-question-circle" width="425" closable=true></p-confirmDialog>
+          </span>
+        </ng-template>
+      </p-column>
+      <p-column field="created_edited" header="Created/Edited" class="highlight">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text">{{show_duplicates[index].created_on}}</label>
+        </ng-template>
+      </p-column>
+      <p-column field="status" header="Status" class="highlight">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text">{{artistStatus[show_duplicates[index].status]}}</label>
+        </ng-template>
+      </p-column>
+      <!-- <p-column field="reviewed" header="RV">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text">{{show_duplicates[index].obj.review}}</label>
+        </ng-template>
+      </p-column> -->
+      <!-- <p-column field="images.length" header="I"></p-column> -->
+      
+      <p-column field="artists" header="artists" [style]="{'width':'240px'}">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <div class="col-lg-5 col-md-5 col-sm-5 col-xs-2">
+            <select name="mergedArtists" id="mergedArtists" (change)="setDestinationId(show_duplicates[index]._id,$event.target.value)">
+              <option style="display:none">Artist's</option>
+              <option *ngFor="let item of mergedArtists[index]" [value]="item">
+                  <label class="created-text">{{item}}</label>
+              </option>
+            </select>
+          </div>
+        </ng-template>
+      </p-column>
+
+      <p-column header="Merge">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+          <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+            <button class="show-button" name="mergeButton" (click)="mergeArtists(show_duplicates[index]._id)" pButton type="button" label="Merge">              
+            </button>
+          </ng-template>
+        </div>
+      </p-column>
+
+      <p-column field="table-checkbox" header="Action">
+          <!-- <p-checkbox [(ngModel)]="show_duplicates.action_checkbox" binary="true"></p-checkbox> -->
+          <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+            <input type="checkbox" name="check1" (click)="selectArtistId($event, show_duplicates[index]._id)" value="show_duplicates[index]._id"/>
+          </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
+</div>

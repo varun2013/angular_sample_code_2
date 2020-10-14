@@ -1,0 +1,84 @@
+@import "../../../../../styles.sass"
+
+.show-duplicates
+  padding: 1.5% 0 0 2%
+  height: 90vh
+  overflow: scroll
+  .main-text
+    width: 100%
+    font-family: $font--lora
+    font-size: $spacing * 1.5
+    padding: 0 0 1% 0
+  .show-table-input
+    margin: 0 0 $spacing * 0.5 0
+    width: 50%
+    .show-duplicate-dropdown
+      /deep/ .ui-dropdown
+        width: 100% !important
+        padding: $spacing * 0.25 !important
+        background-color: #fff !important
+      /deep/ .ui-dropdown input.ui-dropdown-label
+        padding: 1.5% 3%
+        letter-spacing: $spacing * 0.05
+      /deep/ .ui-dropdown-panel .ui-dropdown-list
+        z-index: 11
+        position: absolute
+        width: 100%
+        border: $spacing * 0.05 solid #D5D5D5
+        word-wrap: break-word
+        /deep/ .ui-widget-header .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-state-highlight
+          border-color: #64b9ef !important
+          background: #64b9ef !important
+          color: #FFF !important
+    button
+      border: 1px solid #64b9ef !important
+      background: #64b9ef !important
+      margin: 0 10px 0 0 !important
+      padding: $spacing * 0.25 $spacing * 0.5 !important
+      font-family: $font--open-sans !important
+      font-size: $spacing * 0.75 !important
+      color: #fff !important
+      letter-spacing: $spacing * 0.05 !important
+      &:hover
+        box-shadow: 2px 2px 8px 2px rgba(70, 164, 224, 0.47) !important
+
+  .show-table
+    margin: 0
+    text-align: center
+    word-wrap: break-word
+    .highlight
+      background-color: #aed8f3 !important
+    .created-text
+      font-size: $spacing  * 0.65
+      font-family: $font--open-sans
+      font-weight: 800
+      width: 100%
+    .edit-btn>a
+      font-size: $spacing * 0.625
+      font-family: $font--open-sans
+      cursor: pointer
+      padding: 0 $spacing * 0.25
+      &:hover
+        color: #64b9ef
+    .divider
+      border-right: $spacing * 0.05 solid #848080
+    /deep/.ui-chkbox-box.ui-state-active, .ui-radiobutton-box.ui-state-active
+      border: $spacing * 0.05 solid #64b9ef
+      background: #64b9ef
+      color: #FFF
+    /deep/.ui-datatable .ui-selection-column .ui-chkbox
+      text-align: -webkit-center !important
+    /deep/ .ui-datatable tbody>tr.ui-widget-content.ui-state-highlight
+      background: none !important
+      color: #000 !important
+    /deep/ .ui-widget-content .ui-state-highlight a, .ui-state-highlight a
+      color: #222222 !important
+
+/deep/ .ui-datatable-tablewrapper table tr td:nth-child(3)
+  background-color: #a2d0ec
+
+/deep/ .ui-datatable-tablewrapper table tr td:nth-child(4)
+  background-color: #a2d0ec
+
+.name-highlight
+  color: #64b9ef

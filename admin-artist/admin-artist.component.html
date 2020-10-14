@@ -1,0 +1,224 @@
+  <div class="row artist">
+  <label class="main-text">Artist</label>
+  <div class="artist-form">
+    <app-alert [alertType]="'success'" *ngIf="isStatusChanged" [message]="'Status of selected Artist(s) has been changed successfully'"></app-alert>
+
+    <app-alert [alertType]="'success'" *ngIf="isMerged" [message]="'artists merged successfully'"></app-alert>
+    <app-alert [alertType]="'success'" *ngIf="isReviewed" [message]="'User Edited Artist marked as reviewed.'"></app-alert>
+    <app-alert [alertType]="'success'" *ngIf="isMarkedNonDuplicate" [message]="'User Artist marked as non duplicate.'"></app-alert>
+    <app-alert [alertType]="'success'" *ngIf="isArtistGenreUpdate" [message]="'Artist genre updated.'"></app-alert>
+   <div *ngIf="isSearchData">
+      <label class="label-heading">Artist ID :</label>
+      <div class="row no-padding artist-input">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 custom-padding">
+          <p-dropdown [options]="Id" class="artistID-dropdown" placeholder="Select a artist ID" [(ngModel)]="search1.label"></p-dropdown>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 custom-padding ">
+          <input type="text" name="artistID" class="ID-input artist-input-box" [(ngModel)]="search1.id" placeholder="ARTISTS ID" />
+        </div>
+      </div>
+
+      <div class="row no-padding artist-input">
+        <div class="col-lg-4 col-md-4 col-sm-4 custom-padding">
+          <label class="label-heading">Status :</label>
+          <p-dropdown [options]="status" [(ngModel)]="search1.status" class="dropdown-section" placeholder="Select a status"></p-dropdown>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 custom-padding inner-padding">
+          <label class="label-heading">Created By :</label>
+          <p-dropdown [options]="creators" [(ngModel)]="search1.creator_type" class="dropdown-section" placeholder="Select a creator" (click)="selectValue(search1.creator_type)"></p-dropdown>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 custom-padding inner-padding">
+          <label class="label-heading">Genre :</label>
+          <p-dropdown [options]="genre" [(ngModel)]="search1.genre" class="dropdown-section" placeholder="Select a genre">
+            <ng-template let-category pTemplate="item">
+              <div class="ui-helper-clearfix">
+                <div>{{category.label}}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </div>
+
+      <div class="row no-padding artist-input">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 custom-padding">
+          <label class="label-heading">Artist Name :</label>
+          <input type="text" name="artistID" class="ID-input" [(ngModel)]="search1.artistname" />
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-5 col-xs-6 custom-padding name-padding">
+          <label class="label-heading">Provider :</label>
+          <!-- <input type="text" name="artistID" class="ID-input" [(ngModel)]="search1.username" /> -->
+          <p-dropdown [options]="providerList" [(ngModel)]="search1.username" class="dropdown-section" placeholder="Select a provider" (click)="selectValue(search1.creator_type)">
+            <ng-template let-p pTemplate="item">
+              <div class="ui-helper-clearfix">
+                <div>{{p.label}}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-5 col-xs-6 inner-padding">
+          <label class="label-heading">User Email or ID - last 5 digits :</label>
+          <input type="text" name="userId" class="ID-input event-input-box" [(ngModel)]="userId" />
+        </div>
+      </div>
+
+      <div class="row no-padding artist-form-checkbox">
+        <div class="ui-g-12">
+          <p-checkbox name="group1" label="Exact Match" [(ngModel)]="search1.opt_exact_match" binary="true" inputId="exact_match" value="exact_match"></p-checkbox>
+        </div>
+        <div class="ui-g-12">
+          <p-checkbox name="group1" label="Has Images" [(ngModel)]="search1.opt_has_img" binary="true" inputId="has_img" value="has_img"></p-checkbox>
+        </div>
+        <div class="ui-g-12">
+          <p-checkbox name="group1" label="Has Reviews" [(ngModel)]="search1.opt_has_rev" binary="true" inputId="has_rev" value="has_rev"></p-checkbox>
+        </div>
+        <div class="ui-g-12">
+          <p-checkbox name="group1" label="User Edited" [(ngModel)]="search1.opt_user_edited" binary="true" inputId="user_edited" value="user_edited"></p-checkbox>
+        </div>
+      </div>
+    </div>
+    <div class="row no-padding artist-form-buttons">
+      <button pButton type="button" (click)="filter()" label="Filter"></button>
+      <button pButton type="button" (click)="clear()" label="Clear"></button>
+      <button pButton type="button" label="Find Duplicates" [routerLink]="['/admin/duplicatesartist']"></button>
+    </div>
+  </div>
+
+  <div *ngIf="isResult">
+    <div class="row Page-info">
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 custom-padding">
+        <div class="count-button">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 no-padding category-name">
+            <span ngClass="icon icon-calendar"></span>Total Artists
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding count">{{adminArtists.total}}</div>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 custom-padding page-input">
+        <label class="label-heading">Show :</label>
+        <p-dropdown #entry (onChange)="getData()" [(ngModel)]="selectedEntry" [options]="entries_dropdown" class="enteries-dropdown"></p-dropdown>
+      </div>
+
+      <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12 custom-padding page-input">
+        <label class="label-heading">Page :</label>
+        <input type="text" name="artistID" class="page-input-box" placeholder="Page" [(ngModel)]="search1.page_input" />
+      </div>
+
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 pagination">
+        <p-paginator id="paginator" rows="1" pageLinkSize="5" (onPageChange)="paginate($event)" totalRecords="{{adminArtists.total/adminArtists.page_limit}}"></p-paginator>
+      </div>
+
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 custom-padding more-button page-input">
+        <button pButton type="button" (click)="moreFilter()" label="More Filter"></button>
+      </div>
+
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 custom-padding page-input">
+        <label class="label-heading">Search :</label>
+        <input type="text" name="artistID" class="search-input" placeholder="Search" [(ngModel)]="search1.artistname" />
+      </div>
+
+      <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12 custom-padding page-button page-input">
+        <button pButton type="button" (click)="filter()" label="Go"></button>
+      </div>
+    </div>
+
+    <div class="row Page-sub-info">
+      <div class="col-lg-2 col-md-2 col-sm-2 custom-padding">
+        <label class="label-heading">Genre :</label>
+        <p-dropdown [options]="genre" [(ngModel)]="search1.genre" class="dropdown-section" placeholder="Select a Genre">
+          <ng-template let-category pTemplate="item">
+            <div class="ui-helper-clearfix">
+              <div>{{category.label}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+
+      <div class="col-lg-2 col-md-2 col-sm-2 sub-button">
+        <button pButton type="button" [disabled]="checkedArtistId.length < 1" (click)="changeGenre(search1.genre)" label="Change Genre"></button>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 sub-button">
+        <button [disabled]="checkedArtistId.length < 1" label="Edit Selected Artist" pbutton="" type="button" ng-reflect-label="Edit Selected Artist"
+          class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+          <a [ngClass]="checkedArtistId.length < '1'?'disabled':''" class="ui-button-text ui-c" [routerLink]="['/user/event/create-artist/', checkedArtistId[0]]">Edit Selected Artist</a>
+        </button>
+
+        <!-- <button pButton type="button" (click)="editArtists()" label="Edit Selected Artists"></button> -->
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 sub-button">
+        <p-dropdown [options]="statusOptions" [(ngModel)]="search1.statusOptions" class="artistID-dropdown" placeholder="With selected"></p-dropdown>
+      </div>
+      <div class="col-lg-1 col-md-1 col-sm-1 custom-padding go-button">
+        <button pButton type="button" (click)="statusChange(search1.statusOptions)" label="Go"></button>
+      </div>
+    </div>
+
+    <div class="row result-table">
+      <div *ngIf="loading" class="loader">
+        <div class="small-loader"></div>
+      </div>
+       <p-dataTable [value]="adminArtists.artists" headerCheckboxToggleAllPages="false" [(selection)]="checkedArtistId" (onSort)="sortColumn($event)" [rows]="9" [paginator]="false" totalRecords="{{adminArtists.total}}">
+        <p-column field="_id" header="ArtistID" [style]="{'width':'200px'}"></p-column>
+        <p-column field="name" header="Name" sortable="custom">
+          <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+            <label class="artist-name">{{adminArtists.artists[index].name}}</label>
+            <span class="edit-btn divider">
+              <a target="_blank" [routerLink]="['/artist/',adminArtists.artists[index].url]">View</a>
+            </span>
+            <span class="edit-btn divider">
+              <a target="_blank" [routerLink]="['/user/event/create-artist',adminArtists.artists[index]._id]">Edit</a>
+            </span>
+            <span *ngIf="adminArtists.artists[index].merged_artist_id == 0"  class="edit-btn divider">
+              <a target="_blank" routerLinkActive="active-link" [routerLink]="['/admin/mergeartist/',adminArtists.artists[index]._id]">Merge</a>
+            </span>
+            <span *ngIf="adminArtists.artists[index].status != '0'" class="edit-btn">
+              <a (click)="delete_record(adminArtists.artists[index]._id)">Delete</a>
+            </span>
+            <span class="edit-btn">
+              <p-checkbox name="sourceArtistId" class="p-chk" value="{{adminArtists.artists[index]._id}}" label="Merge Source" [(ngModel)]="selectedSourceArtistsId" inputId="ny"></p-checkbox>
+            </span>
+            <span>
+              <!-- <p-confirmDialog *ngIf="isDialogClose" header="Confirmation" icon="fa fa-question-circle" width="425" closable=true></p-confirmDialog> -->
+            </span>
+              <!-- <label class="artist-name">{{adminArtists.artists[index].name}}</label> -->
+          </ng-template>
+        </p-column>
+        <p-column field="created_on" header="Created/Edited" sortable="custom" [style]="{'width':'130px'}">
+          <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+            <label class="created-text">{{adminArtists.artists[index].created_by_name}}</label>
+            <br/>
+            <label class="created-text">{{adminArtists.artists[index].created_on | date:'yyyy-MM-dd'}}</label>
+            <br/>
+            <a *ngIf="adminArtists.artists[index].created_by_name && adminArtists.artists[index].created_by_name.indexOf('@')>-1" (click)="commonService.click2Copy('cId'+index, adminArtists.artists[index].user_id)" class="ev-tooltip" >
+              <i class="fa fa-copy" (onmouseout)="outFunc()">
+                <span class="tooltiptext" id="cId{{index}}">Click 2 Copy</span>
+              </i>
+            </a>
+          </ng-template>
+        </p-column>
+        <p-column field="status" header="Status" sortable="custom" [style]="{'width':'70px'}">
+          <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+            <label class="created-text">{{artistStatus[adminArtists.artists[index].status]}}
+            <span class="ma-id" title="{{adminArtists.artists[index].merged_artist_id}}" *ngIf="adminArtists.artists[index].merged_artist_id">{{adminArtists.artists[index].merged_artist_id.substr(adminArtists.artists[index].merged_artist_id.length-5,adminArtists.artists[index].merged_artist_id.length)}}</span>
+            </label>
+          </ng-template>
+        </p-column>
+        <p-column field="review" header="Review" [style]="{'width':'50px'}">
+          <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+            <label class="created-text">{{adminArtists.artists[index].review_count}}</label>
+          </ng-template>
+        </p-column>
+        <p-column field="images.length" header="Image" [style]="{'width':'50px'}">
+          <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+            <label class="created-text">{{adminArtists.artists[index].images.length}}</label>
+          </ng-template>
+        </p-column>
+        <p-column field="table-checkbox" header="Action" selectionMode="multiple" [style]="{'width':'50px','padding': '0% 0.4%'}">
+        </p-column>
+        <p-paginator rows="10" totalRecords="100" (onPageChange)="paginate($event)"></p-paginator>
+      </p-dataTable>
+      <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425" closable=true></p-confirmDialog>
+    </div>
+
+  </div>
+</div>

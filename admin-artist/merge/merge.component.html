@@ -1,0 +1,392 @@
+<div class="row merge">
+  <div *ngIf="loading" class="loader">
+    <div class="small-loader"></div>
+  </div>
+  <label class="main-text">Merge Artists</label>
+  <div *ngIf="isMerge" class="merge-form">
+      <label class="label-heading">Source Artist :</label>
+      <div class="row merge-input">
+      <input type="text" name="sourceartist" disabled class="ID-input artist-input-box" [(ngModel)]="search1.source_artistname"  placeholder="Source artist" />
+      </div>
+      <label class="label-heading">Destination Artist :</label>
+      <div class="row merge-input">
+        <input (keyup)="getArtists(location.value,'artists')" [(ngModel)]="event.location" #location="ngModel" type="text" id="location"
+                    ngClass="form-control " name="location" placeholder="Type slowly and choose from Eventsfy artist list" required />
+        <div class="artistSuggestions suggestions" *ngIf="location.value && artists && artists.length > 0 && !artistIsSelected">
+            <ng-template ngFor let-i="index" let-artist [ngForOf]="artists">
+              <li (click)="selectArtist(artist.id,artist.value)">
+                <a *ngIf="artist.city && artist.state">{{artist.value}}({{artist.city}},{{artist.state}})</a>
+                <a *ngIf="!artist.city || !artist.state">{{artist.id}} - {{artist.value}}</a>
+              </li>
+            </ng-template>
+        </div>
+      </div>
+      <div class="row merge-form-button">
+          <button pButton type="button" label="Next" (click)="mergeArtists()"></button>
+      </div>
+  </div>
+  <!--Second Step for merge-->
+  <div *ngIf="isMergeTable" class="row merge-table-section">
+    <label class="table-heading-subtext">Select Source or Destination artist for each block of data.</label>
+    <div class="row merge-table">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+        <label class="column-source-heading">Source</label>
+        <label class="column-source-id">(ID - "{{adminArtists.source_artist._id}}")</label>
+        <div class="row table-section">
+          <label class="table-section-heading">Name/Photos/Address</label>
+          <p-radioButton name="groupname1" value="source" [(ngModel)]="search1.block1" label="Source"></p-radioButton>
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="name" ngClass="input-group-addon">Name</label>
+            <input type="text"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.name" maxlength="60"/>
+          </div>
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="categories" ngClass="input-group-addon label-alignment">Genres/ Categories</label>
+            <li class="genre-section">
+              <a ngClass="dropdown">
+                <a href="#" ngClass="dropdown-toggle" data-toggle="dropdown">
+                  <span>
+                  <input readonly [(ngModel)]="userSelectedCategories" name="genere" #Testcategories="ngModel" id="genre" type="text" class="form-control search-box-text"
+                      name="genre" placeholder="Select Generes" />
+                    <span ngClass="glyphicon select-menu-down-arrow glyphicon-menu-down"></span>
+                  </span>
+                </a>
+                <ul id="genre-dropdown" ngClass="nav-profile-dropdown-menu dropdown-menu">
+                  <ng-template ngFor let-i="index" let-category [ngForOf]="categoriesList">
+                    <li *ngIf="category && !category.parent_id" id="genres{{i}}" class="genre-item row terms-checkbox">
+                      <input disabled (ngModelChange)="selectSourceCategories($event, category._id)" [(ngModel)]="userSelectedCategory[i]" name="genere{{i}}"
+                        #categories="ngModel" [checked]="userSelectedCategory[i]" ngClass="checkbox-input" id="styled-checkbox{{i}}"
+                        type="checkbox" value="{{category.name}}">
+                      <label for="styled-checkbox{{i}}" ngClass="form-checkbox-style"></label>
+                      <label for="styled-checkbox{{i}}" class="genre-text">{{category.name}}</label>
+                    </li>
+                    <li *ngIf="category && category.parent_id" id="genres{{i}}" class="genre-item row terms-checkbox sub-category">
+                      <input  disabled (ngModelChange)="selectSourceCategories($event, category._id)" [(ngModel)]="userSelectedCategory[i]" name="genere{{i}}"
+                        #categories="ngModel" [checked]="userSelectedCategory[i]" ngClass="checkbox-input" id="styled-checkbox{{i}}"
+                        type="checkbox" value="{{category.name}}">
+                      <label for="styled-checkbox{{i}}" ngClass="form-checkbox-style"></label>
+                      <label for="styled-checkbox{{i}}" class="genre-text">{{category.name}}</label>
+                    </li>
+                  </ng-template>
+                </ul>
+              </a>
+            </li>
+              </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="name" ngClass="input-group-addon">Artist or Show ?</label>
+            <input type="text"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.type"/>
+           
+          </div>
+       </div>
+
+        <div class="row table-section">
+          <label class="table-section-heading">Email/Social Fields</label>
+          <p-radioButton name="groupname2" value="source" [(ngModel)]="search1.block2" label="Source"></p-radioButton>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="email" ngClass="input-group-addon">Email</label>
+            <input type="text"  [(ngModel)]="adminArtists.source_artist.email"  disabled ngClass="form-control"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="hometown" ngClass="input-group-addon">Home Town</label>
+            <input type="text"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.hometown" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="yearformed" ngClass="input-group-addon">Year Formed</label>
+            <input type="text"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.year_formed" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="website" ngClass="input-group-addon">Website</label>
+            <input type="text"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.website" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="facebook" ngClass="input-group-addon">Facebook</label>
+            <input type="text"   *ngIf="adminArtists.source_artist.social_media.facebook" disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.facebook.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="twitter" ngClass="input-group-addon">Twitter</label>
+            <input type="text"  *ngIf="adminArtists.source_artist.social_media.twitter"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.twitter.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="instagram" ngClass="input-group-addon">Instagram</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.instagram"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.instagram.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="tumblr" ngClass="input-group-addon">Tumblr</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.tumblr"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.tumblr.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="Pinterest" ngClass="input-group-addon">Pinterest</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.pinterest"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.pinterest.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="myspace" ngClass="input-group-addon">MySpace</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.myspace"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.myspace.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="wikipedia" ngClass="input-group-addon">Wikipedia</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.wikipedia"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.wikipedia.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="youtue" ngClass="input-group-addon">Youtube</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.youtube"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.youtube.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="vimeo" ngClass="input-group-addon">Vimeo</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.vimeo"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.vimeo.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="vevo" ngClass="input-group-addon">Vevo</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.vevo"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.vevo.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="soundcloud" ngClass="input-group-addon">SoundCloud</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.soundcloud"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.soundcloud.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="reverbnation" ngClass="input-group-addon">Reverbnation</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.reverbnation" accept=""  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.reverbnation.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="bandcamp" ngClass="input-group-addon">Band Camp</label>
+            <input type="text" *ngIf="adminArtists.source_artist.social_media.bandcamp"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.social_media.bandcamp.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="youtube_vimeo1" ngClass="input-group-addon">YouTube or Vimeo video 1</label>
+            <input type="text" *ngIf="adminArtists.source_artist.video_embeds[0]"   disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.video_embeds[0]" #video_embeds1="ngModel" name="embed1" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="youtube_vimeo2" ngClass="input-group-addon">YouTube or Vimeo video 2</label>
+            <input type="text" *ngIf="adminArtists.source_artist.video_embeds[1]"   disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.video_embeds[1]" #video_embeds2="ngModel" name="embed2" maxlength="60"/>
+          </div>
+
+        </div>
+
+        <div class="row table-section">
+          <label class="table-section-heading">Description</label>
+          <p-radioButton name="groupname3" value="source" [(ngModel)]="search1.block3" label="Source"></p-radioButton>
+          <div ngClass="input-group form-group custom-textarea ">
+            <textarea type="text"  disabled ngClass="form-control" [(ngModel)]="adminArtists.source_artist.description" maxlength="1000"></textarea>
+          </div>
+        </div>
+
+        <div class="row table-section">
+          <label class="table-section-heading">Images</label>
+          <ng-template ngFor let-event let-index="index" [ngForOf]="adminArtists.source_artist.images">
+            <div class="merge-images-section">
+              <p-checkbox name="groupname4" value="{{adminArtists.source_artist.images[index].url}}"  [(ngModel)]="checkbox2"></p-checkbox>
+              <img class="merge-data-img" src='{{adminArtists.source_artist.images[index].url}}'>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+        <label class="column-source-heading">Destination</label>
+        <label class="column-source-id">(ID - "{{adminArtists.destination_artist._id}}")</label>
+        <div class="row table-section">
+          <label class="table-section-heading">Name/Photos/Address</label>
+          <p-radioButton name="groupname1" value="destination" [(ngModel)]="search1.block1" label="Destination"></p-radioButton>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="name" ngClass="input-group-addon">Name</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.name" maxlength="60"/>
+          </div>
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="categories" ngClass="input-group-addon label-alignment">Genres/ Categories</label>
+            <li class="genre-section">
+              <a ngClass="dropdown">
+                <a href="#" ngClass="dropdown-toggle" data-toggle="dropdown">
+                  <span>
+                    <input readonly [(ngModel)]="userDestSelectedCategories" name="genere2"  id="genre2" type="text" class="form-control search-box-text"
+                      placeholder="Select Generes" />
+                    <span ngClass="glyphicon select-menu-down-arrow glyphicon-menu-down"></span>
+                  </span>
+                </a>
+                <ul id="genre-dropdown2" ngClass="nav-profile-dropdown-menu dropdown-menu">
+                  <ng-template ngFor let-j="index" let-destCategory [ngForOf]="categoriesList">
+                    <li *ngIf="destCategory && !destCategory.parent_id" id="destGenres{{j}}" class="genre-item row terms-checkbox">
+                      <input  (ngModelChange)="selectDestinationCategories($event, destCategory._id)" [(ngModel)]="userSelectedCategory2[j]" name="genere2{{j}}"
+                        #categories2="ngModel" [checked]="userSelectedCategory2[j]" ngClass="checkbox-input" id="destStyledCkbox{{j}}"
+                        type="checkbox" value="{{destCategory.name}}">
+                      <label for="destStyledCkbox{{j}}" ngClass="form-checkbox-style"></label>
+                      <label for="destStyledCkbox{{j}}" class="genre-text">{{destCategory.name}}</label>
+                    </li>
+                    <li *ngIf="destCategory && destCategory.parent_id" id="destGenres{{j}}" class="genre-item row terms-checkbox sub-category">
+                      <input  (ngModelChange)="selectDestinationCategories($event, destCategory._id)" [(ngModel)]="userSelectedCategory2[j]" name="genere2{{j}}"
+                        #categories2="ngModel" [checked]="userSelectedCategory2[j]" ngClass="checkbox-input" id="destStyledCkbox{{j}}"
+                        type="checkbox" value="{{destCategory.name}}">
+                      <label for="destStyledCkbox{{j}}" ngClass="form-checkbox-style"></label>
+                      <label for="destStyledCkbox{{j}}" class="genre-text">{{destCategory.name}}</label>
+                    </li>
+                  </ng-template>
+                </ul>
+              </a>
+            </li>
+              </div>
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="name" ngClass="input-group-addon">Artist or Show ?</label>
+           <input type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.type"/>
+          </div>
+
+        </div>
+
+        <div class="row table-section">
+          <label class="table-section-heading">Email/Social Fields</label>
+          <p-radioButton name="groupname2" value="destination" [(ngModel)]="search1.block2" label="Destination"></p-radioButton>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="email" ngClass="input-group-addon">Email</label>
+            <input  type="text" [(ngModel)]="adminArtists.destination_artist.email" ngClass="form-control"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="hometown" ngClass="input-group-addon">Home Town</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.hometown" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="yearformed" ngClass="input-group-addon">Year Formed</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.year_formed"  maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="website" ngClass="input-group-addon">Website</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.website" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="facebook" ngClass="input-group-addon">Facebook</label>
+            <input  type="text"  ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.facebook.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="twitter" ngClass="input-group-addon">Twitter</label>
+            <input  type="text"  ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.twitter.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="instagram" ngClass="input-group-addon">Instagram</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.instagram.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="tumblr" ngClass="input-group-addon">Tumblr</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.tumblr.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="Pinterest" ngClass="input-group-addon">Pinterest</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.pinterest.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="myspace" ngClass="input-group-addon">MySpace</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.myspace.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="wikipedia" ngClass="input-group-addon">Wikipedia</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.wikipedia.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="youtue" ngClass="input-group-addon">Youtube</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.youtube.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="vimeo" ngClass="input-group-addon">Vimeo</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.vimeo.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="vevo" ngClass="input-group-addon">Vevo</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.vevo.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="soundcloud" ngClass="input-group-addon">SoundCloud</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.soundcloud.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="reverbnation" ngClass="input-group-addon">Reverbnation</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.reverbnation.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="bandcamp" ngClass="input-group-addon">Band Camp</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.social_media.bandcamp.url" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="youtube_vimeo1" ngClass="input-group-addon">YouTube or Vimeo video 1</label>
+            <input  type="text" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.video_embeds[0]" #video_embeds1="ngModel" name="embed1" maxlength="60"/>
+          </div>
+
+          <div ngClass="input-group form-group custom-input-group">
+            <label for="youtube_vimeo2" ngClass="input-group-addon">YouTube or Vimeo video 2</label>
+            <input  type="text" name="embed2" #video_embeds2="ngModel" ngClass="form-control" [(ngModel)]="adminArtists.destination_artist.video_embeds[1]" maxlength="60"/>
+          </div>
+        </div>
+
+        <div class="row table-section">
+          <label class="table-section-heading">Description</label>
+          <p-radioButton name="groupname3" value="destination" [(ngModel)]="search1.block3" label="Destination"></p-radioButton>
+          <div ngClass="input-group form-group custom-textarea ">
+            <textarea  type="text" ngClass="form-control"  [(ngModel)]="adminArtists.destination_artist.description" maxlength="1000"></textarea>
+          </div>
+        </div>
+
+        <div class="row table-section">
+          <label class="table-section-heading">Images</label>
+          <ng-template ngFor let-event let-index="index" [ngForOf]="adminArtists.destination_artist.images">
+              <div class="merge-images-section">
+                <p-checkbox name="groupname4"  value="{{adminArtists.destination_artist.images[index].url}}" [(ngModel)]="checkbox2"></p-checkbox>
+                <img src='{{adminArtists.destination_artist.images[index].url}}'>
+              </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <label class="column-source-heading bottom-heading">Events</label>
+    <label class="bottom-heading">Select which events to move to the Destination artist.</label>
+    <div class="bottom-heading">
+      <a class="check-link">check all</a> / <a class="check-link">check none</a>
+    </div>
+    <label class="bottom-heading">No upcoming events to merge</label>
+    <div class="row events-table">
+      <div class="row table-section event-table-section">
+        <label class="table-section-heading">Events</label>
+        <ng-template ngFor let-event let-index="index" [ngForOf]="adminArtists.upcoming_events">
+          <p-checkbox name="groupname5" value="{{adminArtists.upcoming_events[index]._id}}" [(ngModel)]="checkbox" label="{{adminArtists.upcoming_events[index].name}}"></p-checkbox><br><br>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="row merge-form-button bottom-heading">
+        <button pButton type="button" label="Confirm Merge" (click)="mergeVenueReviewsConfirm()"></button>
+    </div>
+  </div>
+  
+
+</div>

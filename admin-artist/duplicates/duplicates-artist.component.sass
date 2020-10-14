@@ -1,0 +1,50 @@
+@import "../../../../styles.sass"
+
+.duplicates
+  margin: 0
+  padding: 1.5% 2%
+  overflow-x: scroll
+  overflow-y: scroll
+  height: 93%
+  .main-text
+    font-family: $font--lora
+    font-size: $spacing * 1.15
+    padding: 0 0.8% 1% 0
+  .categories
+    margin: 0
+    .categories-text
+      font-family: $font--open-sans
+      font-size: $spacing * 0.7
+    .categories-links>a
+      font-size: 14px
+      padding: 0 $spacing * 0.5 0 $spacing * 0.2
+      color: #000
+      cursor: pointer
+      &:hover
+        color: #64b9ef
+    .divider
+      border-right: $spacing * 0.05 solid #000
+  .result-table
+    padding: 4% 1.5%
+    /deep/ .ui-datatable .ui-datatable-thead>tr>th, .ui-datatable .ui-datatable-tfoot>tr>td
+      font-weight: normal
+      background: #64b9ef
+      border-width: 3px
+      padding: 0.5% 0
+      color: #000
+    .created-text
+      font-size: $spacing  * 0.65
+      font-family: $font--open-sans
+      font-weight: 800
+
+    .created-no
+      cursor: pointer
+      font-size: $spacing  * 0.5
+      font-family: $font--open-sans
+      font-weight: 100
+      &:hover, &:focus
+        color: #64b9ef
+
+/deep/ .ui-datatable
+  text-align: center
+  height: 50vh

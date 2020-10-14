@@ -1,0 +1,62 @@
+<div class="row duplicates">
+  <div *ngIf="loading" class="loader">
+    <div class="small-loader"></div>
+  </div>
+  <label class="main-text">Find Duplicates</label>
+  <span *ngIf="isName">
+    <label class="main-text">By Name</label>
+  </span>
+  <span *ngIf="isFb">
+    <label class="main-text">By FB</label>
+  </span>
+  <span *ngIf="isTwitter">
+    <label class="main-text">By Twitter</label>
+  </span>
+  <div class="row categories">
+    <label class="categories-text">Find Duplicates By: </label>
+    <span class="categories-links divider">
+      <a (click)="name_link()" [ngClass]="isName==true?'dup_is_selected':''">Name</a>
+    </span>
+    <span class="categories-links divider">
+      <a (click)="fb_link()" [ngClass]="isFb==true?'dup_is_selected':''">FB</a>
+    </span>
+    <span class="categories-links divider">
+      <a (click)="twitter_link()" [ngClass]="isTwitter==true?'dup_is_selected':''">Twitter</a>
+    </span>
+    <span class="categories-links">
+      <!-- <a [ngClass]="isNonDups==true?'dup_is_selected':''" (click)="no_dup_link()">List of Artists marked as non-duplicate</a> -->
+      <a (click)="no_dup_link()">List of Artists marked as non-duplicate</a>
+    </span>
+  </div>
+  <div align="center">
+    <label class="categories-text">{{showing}}</label>
+  </div>
+  <div class="row result-table">
+    <!-- <p-dataTable [value]="adminduplicates.artists" [rows]="totalRows" [lazy]="true" [totalRecords]="totalResults" (onLazyLoad)="loadDuplicates($event)"
+      [paginator]="true" [paginatorPosition]="top" > -->
+    <p-dataTable [value]="adminduplicates.artists" [rows]="totalRows" [lazy]="true" [totalRecords]="totalResults" (onLazyLoad)="loadDuplicates($event)" [paginator]="true">
+      <p-column field="id" header="ArtistID" [style]="{'width':'210px'}">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text">{{row.id}}</label>
+        </ng-template>
+      </p-column>
+      <p-column field="name" header="Name">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text">{{row.name}}</label>
+          <label class="created-no" (click)="showAllArtistDuplicates(row)">({{row.count}})</label>
+        </ng-template>
+      </p-column>
+      <p-column field="dup_match_field" header="Matching Field" [style]="{'width':'110px'}">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text">{{row.dup_match_field}}</label>
+        </ng-template>
+      </p-column>
+      <!-- <p-column field="{{table_status}}" header="Status" [style]="{'width':'70px'}"> -->
+      <p-column header="Status" [style]="{'width':'70px'}">
+        <ng-template let-row="rowData" let-index="rowIndex" let-col pTemplate="body">
+          <label class="created-text">{{artistStatus[row.status]}}</label>
+        </ng-template>
+      </p-column>
+    </p-dataTable>
+  </div>
+</div>
